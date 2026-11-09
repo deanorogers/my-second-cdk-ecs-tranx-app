@@ -1,0 +1,11 @@
+.DS_Store
+
+target/
+
+# Local deployment environment files
+.env
+.env.*
+!.env.example
+!.env.deploy.example
+
+.idea/

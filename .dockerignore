@@ -1,0 +1,10 @@
+.git
+.gitignore
+.idea
+*.iml
+README.md
+.env
+.env.*
+target
+nginx
+
