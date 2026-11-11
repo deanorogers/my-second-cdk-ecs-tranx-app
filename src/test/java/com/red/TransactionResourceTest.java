@@ -2,6 +2,7 @@ package com.red;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -14,6 +15,9 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @QuarkusTest
 class TransactionResourceTest {
+
+    @ConfigProperty(name = "prod.quarkus.instance-name")
+    String instanceName;
 
     @Test
     void testRootEndpoint() {
@@ -30,6 +34,7 @@ class TransactionResourceTest {
           .when().get("/transactions")
           .then()
              .statusCode(200)
+             .header("INSTANCE_FROM", is(instanceName))
              .body("id", hasItem("t-1001"));
     }
 
@@ -40,6 +45,7 @@ class TransactionResourceTest {
           .when().get("/transactions")
           .then()
              .statusCode(200)
+             .header("INSTANCE_FROM", is(instanceName))
              .body("accountId", everyItem(is("2001")));
     }
 

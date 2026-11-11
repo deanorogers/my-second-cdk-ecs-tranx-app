@@ -11,9 +11,9 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 
 @Path("/transactions")
@@ -24,9 +24,21 @@ public class TransactionResource {
     @Inject
     TransactionService transactionService;
 
+    @ConfigProperty(name = "prod.quarkus.instance-name")
+    String instanceName;
+
     @GET
-    public List<Transaction> listTransactions(@QueryParam("accountId") String accountId) {
-        return transactionService.list(accountId);
+    @Path("/instance-name")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getInstanceName() {
+        return "Serving Transaction from instance: " + instanceName;
+    }
+
+    @GET
+    public Response listTransactions(@QueryParam("accountId") String accountId) {
+        return Response.ok(transactionService.list(accountId))
+                .header("INSTANCE_FROM", instanceName)
+                .build();
     }
 
     @GET
